@@ -5,9 +5,9 @@ class QuranText {
   String text;
 
   QuranText.fromJson(Map<String, dynamic> json) {
-    this.index = json['index'];
-    this.sura = json['sura'];
-    this.aya = json['aya'];
+    this.index = int.parse(json['index']);
+    this.sura = int.parse(json['sura']);
+    this.aya = int.parse(json['aya']);
     this.text = json['text'];
   }
 }
@@ -19,9 +19,9 @@ class QuranTranslation {
   String text;
 
   QuranTranslation.fromJson(Map<String, dynamic> json) {
-    this.index = json['index'];
-    this.sura = json['sura'];
-    this.aya = json['aya'];
+    this.index = int.parse(json['index']);
+    this.sura = int.parse(json['sura']);
+    this.aya = int.parse(json['aya']);
     this.text = json['text'];
   }
 }
@@ -36,12 +36,12 @@ class QuranSurah {
   int urutanPewahyuan;
 
   QuranSurah.fromJson(Map<String, dynamic> json) {
-    this.index = json['index'];
+    this.index = int.parse(json['index']);
     this.namaSurah = json['nama_surah'];
     this.arab = json['arab'];
     this.artinya = json['artinya'];
-    this.ayat = json['ayat'];
+    this.ayat = int.parse(json['ayat']);
     this.tempatTurun = json['tempat_turun'];
-    this.urutanPewahyuan = json['urutan_pewahyuan'];
+    this.urutanPewahyuan = int.parse(json['urutan_pewahyuan']);
   }
 }

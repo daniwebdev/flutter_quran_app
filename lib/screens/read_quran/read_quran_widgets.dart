@@ -43,9 +43,31 @@ class ReadInlineQuranWidget extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class QuranPerAyatWidget extends StatelessWidget {
+  final QuranText data;
+  final QuranTranslation transalte;
+  final bool isBookmarked;
+
+  Function(QuranText) onBookmark;
+  Function(QuranText) onPlay;
+  Function(QuranText) onShare;
+
+  QuranPerAyatWidget({
+    this.data,
+    this.transalte,
+    this.isBookmarked = false,
+    this.onBookmark,
+    this.onPlay,
+    this.onShare,
+  });
+
   @override
   Widget build(BuildContext context) {
+    String text = data.text;
+
+    if (data.sura != 1 && data.aya == 1) text = data.text.replaceAll('بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ', '').trim();
+
     return Container(
       padding: EdgeInsets.only(bottom: 20, top: 20),
       decoration: BoxDecoration(
@@ -75,10 +97,8 @@ class QuranPerAyatWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Text(
-                    '1',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                    data.aya.toString(),
+                    style: TextStyle(fontFamily: 'FontAyat', color: Colors.white, fontSize: 18),
                   ),
                 ),
                 Expanded(
@@ -86,15 +106,15 @@ class QuranPerAyatWidget extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                          padding: EdgeInsets.all(0),
-                          icon: Icon(
-                            Icons.share_outlined,
-                            size: 25,
-                            color: ColorCustoms.primary,
-                          ),
-                          onPressed: () {},
-                        ),
+                        // IconButton(
+                        //   padding: EdgeInsets.all(0),
+                        //   icon: Icon(
+                        //     Icons.share_outlined,
+                        //     size: 25,
+                        //     color: ColorCustoms.primary,
+                        //   ),
+                        //   onPressed: () {},
+                        // ),
                         IconButton(
                           padding: EdgeInsets.all(0),
                           icon: Icon(
@@ -102,16 +122,21 @@ class QuranPerAyatWidget extends StatelessWidget {
                             size: 25,
                             color: ColorCustoms.primary,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            this.onPlay(this.data);
+                          },
                         ),
                         IconButton(
                           padding: EdgeInsets.all(0),
                           icon: Icon(
-                            Icons.bookmark_border_outlined,
+                            this.isBookmarked ? Icons.bookmark:Icons.bookmark_border_outlined,
                             size: 25,
                             color: ColorCustoms.primary,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            /* OnBookmark */
+                            this.onBookmark(this.data);
+                          },
                         ),
                       ],
                     ),
@@ -124,17 +149,17 @@ class QuranPerAyatWidget extends StatelessWidget {
             alignment: Alignment.centerRight,
             padding: EdgeInsets.symmetric(vertical: 20),
             child: Text(
-              'بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ',
+              text,
               textDirection: TextDirection.rtl,
-              style: TextStyle(fontFamily: 'FontArab', fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(height: 2, fontFamily: 'FontArab', fontWeight: FontWeight.bold, fontSize: 25),
             ),
           ),
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Dolor irure dolore qui culpa dolore cillum.',
+              transalte?.text ?? '',
               textDirection: TextDirection.ltr,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
             ),
           ),
         ],

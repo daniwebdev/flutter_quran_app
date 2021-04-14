@@ -11,9 +11,10 @@ globalAppBar({String title}) {
       child: Text(
         title,
         style: TextStyle(
-          fontFamily: 'QuickSand',
-          fontSize: 30,
-          color: Color(0xFF6B59BC),
+          fontFamily: 'Poppins',
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: ColorCustoms.primary,
         ),
       ),
     ),

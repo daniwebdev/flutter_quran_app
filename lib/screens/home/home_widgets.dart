@@ -6,7 +6,15 @@ import 'package:flutter_quran_app/utils/navigation_util.dart';
 
 class SurahItemWidget extends StatelessWidget {
   final QuranSurah data;
-  SurahItemWidget({this.data});
+  final List<QuranText> quranText;
+  final List<QuranTranslation> quranTranslate;
+
+
+  SurahItemWidget({
+    this.data,
+    this.quranText,
+    this.quranTranslate,
+  });
   @override
   Widget build(BuildContext context) {
     /* SurahItem */
@@ -17,9 +25,7 @@ class SurahItemWidget extends StatelessWidget {
         onTap: () {
           XNavigator.push(
             context,
-            to: ReadQuranScreen(
-              surah: data,
-            ),
+            to: ReadQuranScreen(surah: data, quranText: this.quranText, quranTranslate: this.quranTranslate),
           );
         },
         child: Container(
@@ -34,14 +40,17 @@ class SurahItemWidget extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                        'https://www.kindpng.com/picc/m/174-1743291_floral-pattern-border-png-bintang-segi-delapan-png.png'),
+                    image: AssetImage('assets/images/ayat.png'),
                     fit: BoxFit.cover,
                   ),
                 ),
                 child: Text(
                   data.index.toString(),
-                  style: TextStyle(fontSize: 18, fontFamily: 'FontAyat'),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    // fontFamily: 'FontAyat',
+                  ),
                 ),
               ),
               /* End - No Surah */
@@ -58,7 +67,7 @@ class SurahItemWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(data.artinya + " · ${data.ayat} Ayat"),
+                    Text(data.tempatTurun + " · ${data.ayat} Ayat"),
                   ],
                 ),
               ),

@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quran_app/providers/bookmark_provider.dart';
 import 'package:flutter_quran_app/screens/intro/intro_screen.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // final dir = await getApplicationDocumentsDirectory();
+  // Hive.init(dir.path);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LastReadProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Muslim App',
       theme: ThemeData(
-      fontFamily: 'QuickSand',
+        fontFamily: 'Poppins',
         primarySwatch: Colors.blue,
+        
       ),
       home: IntroScreen(),
     );

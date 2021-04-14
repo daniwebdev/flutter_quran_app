@@ -1,9 +1,42 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_quran_app/colors.dart';
 import 'package:flutter_quran_app/screens/home/home_screen.dart';
 import 'package:flutter_quran_app/utils/navigation_util.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class IntroScreen extends StatelessWidget {
+class IntroScreen extends StatefulWidget {
+  @override
+  _IntroScreenState createState() => _IntroScreenState();
+}
+
+class _IntroScreenState extends State<IntroScreen> {
+  _initQuran() async {
+   Directory path= Directory("/storage/emulated/0/muslim-app/al-quran/per-ayat");
+
+    if(!await path.exists()) {
+
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
+      if(status.isGranted) {
+        await path.create();
+        print("Directory dibuat.");
+      }
+    } else {
+      print("Directory sudah ada.");
+    }
+    
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initQuran();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size _s = MediaQuery.of(context).size;
@@ -14,17 +47,22 @@ class IntroScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Al-Quran",
-              style: TextStyle(color: Color(0xFF6B59BC), fontSize: 50, fontFamily: 'QuickSand'),
+              "Qur'an App",
+              style: TextStyle(
+                color: Color(0xFF6B59BC),
+                fontWeight: FontWeight.w700,
+                fontSize: 28,
+                fontFamily: 'Poppins',
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(
-                "Bacalah Al-Qur'an. Sebab, ia akan datang memberikan syafaat pada hari Kiamat kepada pemilik (pembaca, pengamal)-nya. (HR. Ahmad)",
+                "\"Bacalah Al-Qur'an. Sebab, ia akan datang memberikan syafaat pada hari Kiamat kepada pemilik (pembaca, pengamal)-nya.\"\n(HR. Ahmad)",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: ColorCustoms.gray,
-                  fontSize: 14,
+                  color: Color(0xFF8789A3),
+                  fontSize: 16,
                 ),
               ),
             ),
@@ -38,6 +76,7 @@ class IntroScreen extends StatelessWidget {
                     margin: EdgeInsets.only(bottom: 25),
                     decoration: BoxDecoration(
                       color: Color(0xFF6B59BC),
+                      image: DecorationImage(fit: BoxFit.contain, image: AssetImage('assets/images/quran-splash.png')),
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
@@ -52,17 +91,13 @@ class IntroScreen extends StatelessWidget {
                         width: _s.width * .5,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(0xFFF9B090),
+                          color: ColorCustoms.warning,
                         ),
                         padding: EdgeInsets.all(10),
                         child: Text(
                           "Baca Al-Quran",
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                          ),
+                          style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
