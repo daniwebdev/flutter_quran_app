@@ -4,21 +4,26 @@ import 'dart:io' as io;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AudioUtil {
-  AudioPlayer _audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
   String path = '/storage/emulated/0/muslim-app/al-quran';
 
   playAndSave(url) async {
     String filename = '/per-ayat/' + this._generateMd5(url) + '.dat';
     String pathURL = this.path + filename;
 
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+
     if (!await io.File(pathURL).exists()) {
       print('download');
       await this._save(url, pathURL);
     }
-
-    int result = await _audioPlayer.playBytes(io.File(pathURL).readAsBytesSync(), volume: 100);
+    int result = await audioPlayer.playBytes(io.File(pathURL).readAsBytesSync(), volume: 100);
 
     if (result == 1) {
       print("Play Audio");

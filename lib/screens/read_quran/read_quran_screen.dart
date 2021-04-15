@@ -26,6 +26,7 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
   List<QuranTranslation> quranTranslate;
 
   _ReadQuranScreenState(this.surah, this.quranText, this.quranTranslate);
+  AudioPlayer audioPlayer = AudioPlayer();
 
   _setBookmark({
     int bookmarkSurahIndex,
@@ -63,13 +64,16 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
           ),
         );
   }
+    AudioUtil audio = new AudioUtil();
 
   _play(int surahIndex, int surahAya) async {
+
+    this.audio.audioPlayer.stop();
+
     String surah = surahIndex.toString().padLeft(3, '0');
     String aya = surahAya.toString().padLeft(3, '0');
     String url = "http://www.everyayah.com/data/Abdullah_Basfar_32kbps/${surah}${aya}.mp3";
 
-    AudioUtil audio = new AudioUtil();
     await audio.playAndSave(url);
   }
 
@@ -78,6 +82,14 @@ class _ReadQuranScreenState extends State<ReadQuranScreen> {
     super.initState();
 
     this._getBookmark();
+  }
+
+  @override
+  void dispose() { 
+    this.audio.audioPlayer.stop();
+    this.audio.audioPlayer.dispose();
+    
+    super.dispose();
   }
 
   @override

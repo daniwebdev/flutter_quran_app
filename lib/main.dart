@@ -6,9 +6,6 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // final dir = await getApplicationDocumentsDirectory();
-  // Hive.init(dir.path);
-
   runApp(
     MultiProvider(
       providers: [
