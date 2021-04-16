@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quran_app/colors.dart';
 import 'package:flutter_quran_app/models/bookmark_model.dart';
 import 'package:flutter_quran_app/models/quran_model.dart';
 import 'package:flutter_quran_app/providers/bookmark_provider.dart';
+import 'package:flutter_quran_app/providers/darkmode_provider.dart';
 import 'package:flutter_quran_app/screens/home/home_widgets.dart';
 import 'package:flutter_quran_app/utils/general_util.dart';
 import 'package:flutter_quran_app/utils/quran_asset_util.dart';
@@ -18,6 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<QuranSurah> _surah = [];
   List<QuranText> _quranText = [];
   List<QuranTranslation> _quranId = [];
+
+  String namaLengkap;
 
   _getSurah() async {
     var quranDB = new QuranDB();
@@ -49,9 +51,29 @@ class _HomeScreenState extends State<HomeScreen> {
         );
   }
 
+  _getName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      this.namaLengkap = prefs.getString('nama_lengkap');
+    });
+  }
+
+  onThemeChange() async {
+    ThemeMode _currentMode = context.watch<ThemeProvider>().mode;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (_currentMode == ThemeMode.dark) {
+      prefs.setString('themeMode', 'light');
+      context.read<ThemeProvider>().setMode(ThemeMode.light);
+    } else {
+      prefs.setString('themeMode', 'dark');
+      context.read<ThemeProvider>().setMode(ThemeMode.dark);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _getName();
     _getSurah();
     _getBookmark();
   }
@@ -59,8 +81,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: globalAppBar(title: "Al-Quran"),
+      backgroundColor: Theme.of(context).backgroundColor,
+      appBar: globalAppBar(
+        context,
+        title: "Al-Quran",
+        icon: (context.watch<ThemeProvider>().mode == ThemeMode.dark) ? Icons.wb_sunny : Icons.wb_sunny_outlined,
+        onThemeChange: this.onThemeChange,
+      ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Padding(
@@ -72,18 +99,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   /* Greeting */
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Assalamu'alaikum",
-                          style: TextStyle(fontSize: 16, color: ColorCustoms.gray),
-                        ),
-                        Text(
-                          "Nama",
-                          style: TextStyle(fontSize: 20, color: ColorCustoms.primary, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    child: HeaderGreetingNameWidget(
+                      name: this.namaLengkap,
                     ),
                   ),
                   /* End Greeting */
@@ -101,65 +118,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   /* End Avatar */
                 ],
               ),
-              Container(
-                height: 130,
-                margin: EdgeInsets.only(top: 20),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    scale: 5,
-                    alignment: Alignment.bottomRight,
-                    image: AssetImage('assets/images/quran-transparent.png'),
-                  ),
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFC07CEB),
-                      Color(0xFF7B5BDC),
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    tileMode: TileMode.clamp,
-                  ),
-                ),
-                padding: EdgeInsets.all(15),
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image(
-                          image: AssetImage('assets/images/last_read.png'),
-                          width: 20,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Terakhir Baca',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: LastReadWidget(
-                        data: context.watch<LastReadProvider>().data,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              /* Home Header Widget */
+              HomeHeaderWidget(),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Text(
-                  "Pilih Surah",
-                  style: TextStyle(fontSize: 18, color: ColorCustoms.primary, fontWeight: FontWeight.bold),
-                ),
+                child: Text("Pilih Surah", style: Theme.of(context).textTheme.headline5),
               ),
               Container(
                 child: Column(
@@ -184,30 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class LastReadWidget extends StatelessWidget {
-  final BookmarkModel data;
-  LastReadWidget({this.data});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            data?.bookmarkedSurahName ?? '...',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
-          ),
-          Text(
-            data != null ? 'Ayat No: ${data.bookmarkedSurahAyat}' : '',
-            style: TextStyle(fontWeight: FontWeight.normal, color: Colors.white, fontSize: 14),
-          ),
-        ],
       ),
     );
   }

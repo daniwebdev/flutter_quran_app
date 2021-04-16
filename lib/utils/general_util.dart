@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quran_app/colors.dart';
+import 'package:flutter_quran_app/providers/darkmode_provider.dart';
 
-globalAppBar({String title}) {
+globalAppBar(BuildContext context, {String title, IconData icon, Function onThemeChange}) {
   return AppBar(
     elevation: 0,
     iconTheme: IconThemeData(color: ColorCustoms.gray),
-    backgroundColor: Colors.white,
     title: Padding(
       padding: const EdgeInsets.only(left: 5),
       child: Text(
@@ -14,10 +14,16 @@ globalAppBar({String title}) {
           fontFamily: 'Poppins',
           fontSize: 28,
           fontWeight: FontWeight.bold,
-          color: ColorCustoms.primary,
+          color: Theme.of(context).primaryColorLight,
         ),
       ),
     ),
-    actions: [IconButton(icon: Icon(Icons.search), color: ColorCustoms.gray, onPressed: () {})],
+    actions: [
+      IconButton(
+        icon: Icon(icon),
+        color: ColorCustoms.gray,
+        onPressed: onThemeChange,
+      ),
+    ],
   );
 }

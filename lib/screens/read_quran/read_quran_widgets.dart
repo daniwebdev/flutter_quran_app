@@ -48,6 +48,7 @@ class QuranPerAyatWidget extends StatelessWidget {
   final QuranText data;
   final QuranTranslation transalte;
   final bool isBookmarked;
+  final bool isPlayingAya;
 
   Function(QuranText) onBookmark;
   Function(QuranText) onPlay;
@@ -60,6 +61,7 @@ class QuranPerAyatWidget extends StatelessWidget {
     this.onBookmark,
     this.onPlay,
     this.onShare,
+    this.isPlayingAya
   });
 
   @override
@@ -118,8 +120,8 @@ class QuranPerAyatWidget extends StatelessWidget {
                         IconButton(
                           padding: EdgeInsets.all(0),
                           icon: Icon(
-                            Icons.play_arrow_outlined,
-                            size: 25,
+                            isPlayingAya ? Icons.stop_circle_outlined:Icons.play_circle_outline,
+                            size: 30,
                             color: ColorCustoms.primary,
                           ),
                           onPressed: () {
@@ -130,7 +132,7 @@ class QuranPerAyatWidget extends StatelessWidget {
                           padding: EdgeInsets.all(0),
                           icon: Icon(
                             this.isBookmarked ? Icons.bookmark:Icons.bookmark_border_outlined,
-                            size: 25,
+                            size: 30,
                             color: ColorCustoms.primary,
                           ),
                           onPressed: () {
@@ -159,7 +161,7 @@ class QuranPerAyatWidget extends StatelessWidget {
             child: Text(
               transalte?.text ?? '',
               textDirection: TextDirection.ltr,
-              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
           ),
         ],
